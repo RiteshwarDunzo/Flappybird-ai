@@ -23,8 +23,8 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jggmu"]
-radius = 14.045123
-height = 38.47181
+radius = 17.5564
+height = 45.685272
 
 [node name="Bird" type="CharacterBody2D" unique_id=334957663]
 position = Vector2(81, 90)

@@ -4,18 +4,66 @@
 [ext_resource type="Script" uid="uid://dnodjqnukripm" path="res://scripts/main.gd" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://b07gst3osn40b" path="res://scenes/background.tscn" id="2_sugp2"]
 [ext_resource type="PackedScene" uid="uid://b22me72tcqmdb" path="res://scenes/ground.tscn" id="4_jyhfs"]
+[ext_resource type="PackedScene" uid="uid://bvkfbrpbldajr" path="res://scenes/pipe.tscn" id="5_tbgi4"]
+[ext_resource type="FontFile" uid="uid://b4aswlqa4q5on" path="res://fonts/PixelOperator8-Bold.ttf" id="6_tefeu"]
+[ext_resource type="PackedScene" uid="uid://cjuc0ay4pme7" path="res://scenes/game_over.tscn" id="7_o6xl0"]
+[ext_resource type="AudioStream" uid="uid://chss478usq3yr" path="res://sfx/flappy-bird-hit-sound.mp3" id="8_ya4ey"]
+[ext_resource type="AudioStream" uid="uid://cs2e2r2unr0kb" path="res://sfx/point.mp3" id="9_eb6dy"]
+[ext_resource type="AudioStream" uid="uid://5w8v1sl63sll" path="res://sfx/flap.mp3" id="10_trceg"]
+[ext_resource type="AudioStream" uid="uid://bi54iw16eelkv" path="res://sfx/die.mp3" id="11_a8y0u"]
 
 [node name="Main" type="Node2D" unique_id=1009420824]
 script = ExtResource("1_sugp2")
+pipe_scene = ExtResource("5_tbgi4")
 
 [node name="Background" parent="." unique_id=1810099768 instance=ExtResource("2_sugp2")]
-position = Vector2(449.94205, 299.40555)
-scale = Vector2(-1.0467839, 0.77748287)
+position = Vector2(434.99997, 388)
+scale = Vector2(-1.0005565, 1.0096482)
+
+[node name="Ground" parent="." unique_id=1299636376 instance=ExtResource("4_jyhfs")]
+z_index = 1
+position = Vector2(-11, 272)
+scale = Vector2(1.3339322, 1.0047126)
 
 [node name="Bird" parent="." unique_id=1440448987 instance=ExtResource("1_0wfyh")]
 z_index = 1
 position = Vector2(193, 303)
 scale = Vector2(0.8004017, 0.83031964)
 
-[node name="Ground" parent="." unique_id=1299636376 instance=ExtResource("4_jyhfs")]
-position = Vector2(0, -54)
+[node name="Pipe" parent="." unique_id=2034993424 instance=ExtResource("5_tbgi4")]
+visible = false
+position = Vector2(744, 137)
+
+[node name="Timer" type="Timer" parent="." unique_id=1181832169]
+wait_time = 1.5
+
+[node name="Label" type="Label" parent="." unique_id=2135505067]
+z_index = 2
+offset_left = 321.0
+offset_top = 6.0
+offset_right = 506.0
+offset_bottom = 60.0
+theme_override_fonts/font = ExtResource("6_tefeu")
+theme_override_font_sizes/font_size = 25
+text = "SCORE: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GameOver" parent="." unique_id=1948861488 instance=ExtResource("7_o6xl0")]
+
+[node name="Hit" type="AudioStreamPlayer2D" parent="." unique_id=1947122905]
+stream = ExtResource("8_ya4ey")
+
+[node name="Point" type="AudioStreamPlayer2D" parent="." unique_id=390081566]
+stream = ExtResource("9_eb6dy")
+
+[node name="Flap" type="AudioStreamPlayer2D" parent="." unique_id=1394540055]
+stream = ExtResource("10_trceg")
+
+[node name="Die" type="AudioStreamPlayer2D" parent="." unique_id=1351591975]
+stream = ExtResource("11_a8y0u")
+
+[connection signal="hit" from="Ground" to="." method="_on_ground_hit"]
+[connection signal="hit" from="Pipe" to="." method="_on_pipe_hit"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="restart" from="GameOver" to="." method="_on_game_over_restart"]
