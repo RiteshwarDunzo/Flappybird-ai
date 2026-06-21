@@ -40,3 +40,4 @@ func _physics_process(delta: float) -> void:
 
 func flap():
 	velocity.y = FLAP_SPEED
+	$"../Flap".play()

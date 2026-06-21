@@ -1,11 +1,12 @@
 extends Node2D
 
-var scroll
+@export var pipe_scene : PackedScene
+var scroll : float = 0.0
 var score
 var game_running : bool 
 var game_over : bool
 
-const SCROLL_SPEED : int = 4
+const SCROLL_SPEED : int = 360
 const PIPE_DELAY : int = 100
 const PIPE_RANGE : int = 200
 
@@ -15,6 +16,8 @@ var pipes : Array
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	screen_size = get_window().size
+	ground_height = $Ground.get_node("Sprite2D").texture.get_height()
 	new_game()
 
 func new_game():
@@ -23,6 +26,14 @@ func new_game():
 	game_over = false
 	score = 0
 	scroll = 0
+	$Label.text = "SCORE: " + str(score)
+	$GameOver.hide()
+	for pipe in pipes:
+		pipe.queue_free()
+
+	pipes.clear()
+
+	
 	$Bird.reset()
 
 func _input(event):
@@ -34,8 +45,69 @@ func _input(event):
 				else:
 					if $Bird.flying:
 						$Bird.flap()
+						check_top()
 
 func start_game():
 	game_running = true
 	$Bird.flying = true
 	$Bird.flap()
+	$Timer.start()
+	
+func _process(delta: float) -> void:
+	if game_running:
+		scroll += SCROLL_SPEED*delta
+
+		if scroll >= screen_size.x:
+			scroll = 0
+
+		$Ground.position.x = -scroll
+
+		for pipe in pipes:
+			pipe.position.x -= SCROLL_SPEED*delta
+			
+func _on_timer_timeout() -> void:
+	generate_pipes()
+
+
+func generate_pipes():
+	var pipe = pipe_scene.instantiate()
+	pipe.position.x = screen_size.x + PIPE_DELAY
+	pipe.position.y = (screen_size.y - ground_height) / 2 + randi_range(-PIPE_RANGE, PIPE_RANGE)
+	pipe.hit.connect(bird_hit)
+	pipe.scored.connect(scored)
+	add_child(pipe)
+	pipes.append(pipe)
+
+func bird_hit():
+	$Hit.play()
+	$Bird.falling = true
+	$Bird.get_node("CollisionShape2D").set_deferred("disabled", true)
+	stop_game()
+
+func scored():
+	score += 1
+	$Label.text = "SCORE: " + str(score)
+	$Point.play()
+	
+func check_top():
+	if $Bird.position.y < 0:
+		$Die.play()
+		$Bird.falling = true
+		stop_game()
+
+func stop_game():
+	$Timer.stop()
+	$GameOver.show()
+	$Bird.flying = false
+	game_running = false
+	game_over = true
+
+
+func _on_ground_hit() -> void:
+	$Die.play()
+	$Bird.falling = true
+	stop_game()
+
+
+func _on_game_over_restart() -> void:
+	new_game()
