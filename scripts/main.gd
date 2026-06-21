@@ -50,6 +50,7 @@ func _input(event):
 func start_game():
 	game_running = true
 	$Bird.flying = true
+	$Bird.get_node("CollisionShape2D").set_deferred("disabled", false)
 	$Bird.flap()
 	$Timer.start()
 	

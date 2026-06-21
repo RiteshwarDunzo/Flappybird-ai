@@ -17,8 +17,8 @@ script = ExtResource("1_sugp2")
 pipe_scene = ExtResource("5_tbgi4")
 
 [node name="Background" parent="." unique_id=1810099768 instance=ExtResource("2_sugp2")]
-position = Vector2(434.99997, 388)
-scale = Vector2(-1.0005565, 1.0096482)
+position = Vector2(435.006, 387.8612)
+scale = Vector2(-1.0005424, 1.0100098)
 
 [node name="Ground" parent="." unique_id=1299636376 instance=ExtResource("4_jyhfs")]
 z_index = 1
