@@ -80,6 +80,7 @@ func generate_pipes():
 	pipes.append(pipe)
 
 func bird_hit():
+	print("Fitness:", $Bird.fitness)
 	$Hit.play()
 	$Bird.falling = true
 	$Bird.get_node("CollisionShape2D").set_deferred("disabled", true)
@@ -87,6 +88,7 @@ func bird_hit():
 
 func scored():
 	score += 1
+	$Bird.fitness += 100
 	$Label.text = "SCORE: " + str(score)
 	$Point.play()
 	
@@ -105,6 +107,7 @@ func stop_game():
 
 
 func _on_ground_hit() -> void:
+	print("Fitness:", $Bird.fitness)
 	$Die.play()
 	$Bird.falling = true
 	stop_game()
@@ -112,3 +115,12 @@ func _on_ground_hit() -> void:
 
 func _on_game_over_restart() -> void:
 	new_game()
+
+
+func _on_bird_hit_top() -> void:
+	print("Fitness:", $Bird.fitness)
+	$Die.play()
+	$Hit.play()
+	$Bird.falling = true
+	stop_game()
+	
