@@ -123,8 +123,8 @@ func update_stats_ui() -> void:
 	$UI/Stats/GenerationLabel.text = "GENERATION: " + str(population_manager.generation)
 	$UI/Stats/BestFitnessLabel.text = "BEST FITNESS: " + str(snappedf(population_manager.best_fitness, 0.01))
 	$UI/Stats/BirdsAliveLabel.text = "BIRDS ALIVE: " + str(population_manager.alive_birds)
-	$UI/Stats/SaveBestGenomeToggle.set_pressed_no_signal(population_manager.save_best_genome)
-	$UI/Stats/SaveBestGenomeToggle.text = "SAVE BEST GENOME: " + ("YES" if population_manager.save_best_genome else "NO")
+	$UI/Stats/SaveBestGenomeRow/SaveBestGenomeToggle.set_pressed_no_signal(population_manager.save_best_genome)
+	$UI/Stats/SaveBestGenomeRow/SaveBestGenomeValue.text = "YES" if population_manager.save_best_genome else "NO"
 
 func update_high_score_label() -> void:
 	$Label.text = "HIGH SCORE: " + str(high_score)

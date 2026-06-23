@@ -97,12 +97,25 @@ theme_override_font_sizes/font_size = 20
 text = "BIRDS ALIVE: 0
 "
 
-[node name="SaveBestGenomeToggle" type="CheckButton" parent="UI/Stats"]
+[node name="SaveBestGenomeRow" type="HBoxContainer" parent="UI/Stats"]
+custom_minimum_size = Vector2(300, 32)
 layout_mode = 2
+
+[node name="SaveBestGenomeToggle" type="CheckButton" parent="UI/Stats/SaveBestGenomeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
 button_pressed = true
-text = "SAVE BEST GENOME: YES"
+text = "SAVE BEST GENOME"
+
+[node name="SaveBestGenomeValue" type="Label" parent="UI/Stats/SaveBestGenomeRow"]
+custom_minimum_size = Vector2(42, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("6_tefeu")
+theme_override_font_sizes/font_size = 20
+text = "YES"
+horizontal_alignment = 1
 
 [connection signal="hit" from="Ground" to="." method="_on_ground_hit"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="restart" from="GameOver" to="." method="_on_game_over_restart"]
-[connection signal="toggled" from="UI/Stats/SaveBestGenomeToggle" to="." method="_on_save_best_genome_toggle_toggled"]
+[connection signal="toggled" from="UI/Stats/SaveBestGenomeRow/SaveBestGenomeToggle" to="." method="_on_save_best_genome_toggle_toggled"]

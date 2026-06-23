@@ -107,8 +107,11 @@ func die(_reason := ""):
 
 	has_died = true
 	flying = false
-	falling = true
+	falling = false
 	if genome:
 		genome.fitness = fitness
 	$CollisionShape2D.set_deferred("disabled", true)
 	died.emit(self)
+	hide()
+	set_physics_process(false)
+	queue_free()

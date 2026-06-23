@@ -3,7 +3,7 @@ extends Node
 @export var bird_scene : PackedScene
 @export var bird_container_path : NodePath = NodePath("../BirdContainer")
 
-const POPULATION_SIZE := 100
+const POPULATION_SIZE := 25
 const GENOME_SIZE := 30
 const ELITE_COUNT := 10
 const MUTATION_RATE := 0.10

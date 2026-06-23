@@ -19,6 +19,7 @@ size = Vector2(72, 524)
 size = Vector2(33, 202.5)
 
 [node name="Pipe" type="Area2D" unique_id=2034993424]
+collision_mask = 2
 script = ExtResource("1_nhxoo")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1965653944]
@@ -47,6 +48,7 @@ position = Vector2(5, -398)
 shape = SubResource("RectangleShape2D_27fk6")
 
 [node name="Score" type="Area2D" parent="." unique_id=1499373116]
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Score" unique_id=681638086]
 position = Vector2(73, 1.75)
