@@ -8,7 +8,7 @@ This project is built from scratch as a learning experiment. It does not use ext
 
 
 
-https://github.com/user-attachments/assets/cce1101e-568d-42ac-a298-5773984355b5
+https://github.com/user-attachments/assets/a969a26c-2e6f-4da0-9883-4f6626a63f46
 
 
 
