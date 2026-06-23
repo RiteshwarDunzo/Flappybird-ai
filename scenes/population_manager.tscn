@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c3c4oph3hs66b"]
+
+[ext_resource type="Script" uid="uid://d2r2yvoo0ni7v" path="res://scripts/population_manager.gd" id="1_emc8g"]
+[ext_resource type="PackedScene" uid="uid://csle2uod273ml" path="res://scenes/bird.tscn" id="2_notr2"]
+
+[node name="PopulationManager" type="Node" unique_id=726478460]
+script = ExtResource("1_emc8g")
+bird_scene = ExtResource("2_notr2")
