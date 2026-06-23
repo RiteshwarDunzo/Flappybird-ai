@@ -8,7 +8,8 @@ const GENOME_SIZE := 30
 const ELITE_COUNT := 10
 const MUTATION_RATE := 0.10
 const MUTATION_STRENGTH := 0.3
-const SAVE_PATH := "user://flappy_ai_learning.json"
+const SAVE_FILE_NAME := "flappy_ai_learning.json"
+const SAVE_PATH := "user://" + SAVE_FILE_NAME
 
 var generation := 0
 var population : Array[Genome] = []
@@ -172,6 +173,10 @@ func get_average_fitness() -> float:
 	return total / float(population.size())
 
 func save_learning_state() -> void:
+	if not save_best_genome:
+		delete_learning_state()
+		return
+
 	var save_data := {
 		"generation": generation,
 		"best_fitness": saved_best_fitness,
@@ -253,6 +258,30 @@ func get_best_genome() -> Genome:
 
 	return best_genome
 
+func reset_learning_from_scratch() -> void:
+	generation = 0
+	best_fitness = 0.0
+	saved_best_fitness = 0.0
+	saved_best_genes.clear()
+	generation_complete_pending = false
+	create_population()
+
+func delete_learning_state() -> void:
+	if not FileAccess.file_exists(SAVE_PATH):
+		return
+
+	var user_dir := DirAccess.open("user://")
+	if not user_dir:
+		push_error("Could not open user:// to delete learning state")
+		return
+
+	var error := user_dir.remove(SAVE_FILE_NAME)
+	if error != OK:
+		push_error("Could not delete learning state at " + SAVE_PATH)
+
 func set_save_best_genome(enabled: bool) -> void:
 	save_best_genome = enabled
-	save_learning_state()
+	if enabled:
+		save_learning_state()
+	else:
+		delete_learning_state()

@@ -146,5 +146,14 @@ func update_high_score_label() -> void:
 	$Label.text = "HIGH SCORE: " + str(high_score)
 
 func _on_save_best_genome_toggle_toggled(button_pressed: bool) -> void:
+	var was_running := game_running
 	$PopulationManager.set_save_best_genome(button_pressed)
+
+	if not button_pressed:
+		reset_round()
+		$PopulationManager.reset_learning_from_scratch()
+		$PopulationManager.start_generation()
+		if was_running:
+			start_game()
+
 	sync_save_best_genome_ui(true)
