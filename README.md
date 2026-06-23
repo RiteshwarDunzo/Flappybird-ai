@@ -27,13 +27,15 @@ This project is built from scratch as a learning experiment. It does not use ext
   - Positive and negative weights
   - Activation strength
 
-## Important Note About Randomness
+## Intentional Randomized Training
 
-Training is currently **randomized and not deterministic**.
+Training is **randomized and intentionally not deterministic**.
 
-That means results can vary between runs because the project uses random initialization, random selection, mutation, and pipe placement. The same generation number may not always produce the exact same behavior or fitness score.
+This is a deliberate design choice. Random initialization, random selection, mutation, and pipe placement help keep each training run unique and allow the AI to explore different strategies instead of following the same fixed path every time.
 
-A deterministic seed system may be added later if exact reproducibility becomes important.
+Because of this, results can vary between runs. The same generation number may not always produce the exact same behavior or fitness score, and that is considered a positive part of the experiment.
+
+The project is intended to keep this randomized behavior while improving how consistently fitness increases over generations.
 
 ## How the AI Works
 
@@ -62,7 +64,7 @@ Future improvements will focus on increasing fitness more consistently per gener
 - Better selection strategy.
 - Improved mutation tuning.
 - More stable fitness rewards.
-- Optional deterministic seed support.
+- Keep randomized training while improving learning stability.
 - Better preservation of elite genomes.
 - More detailed training statistics.
 - Improved neural-network visualization.
