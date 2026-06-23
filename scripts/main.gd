@@ -4,7 +4,7 @@ extends Node2D
 var scroll : float = 0.0
 var score := 0
 var high_score := 0
-var game_running : bool 
+var game_running : bool
 var game_over : bool
 
 const SCROLL_SPEED : int = 360
@@ -17,6 +17,7 @@ var pipes : Array
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	Engine.time_scale = 5.0
 	screen_size = get_window().size
 	ground_height = $Ground.get_node("Sprite2D").texture.get_height()
 	new_game()
@@ -59,7 +60,7 @@ func start_game():
 		bird.get_node("CollisionShape2D").set_deferred("disabled", false)
 		bird.flap()
 	$Timer.start()
-	
+
 func _process(delta: float) -> void:
 	update_stats_ui()
 
@@ -74,7 +75,7 @@ func _process(delta: float) -> void:
 		for pipe in pipes:
 			if is_instance_valid(pipe):
 				pipe.position.x -= SCROLL_SPEED*delta
-			
+
 func _on_timer_timeout() -> void:
 	generate_pipes()
 
@@ -94,13 +95,15 @@ func generate_pipes():
 func bird_hit(_bird):
 	$Hit.play()
 
-func scored(bird):
-	score += 1
-	high_score = max(high_score, score)
+func scored(bird, counts_for_score: bool):
+	if counts_for_score:
+		score += 1
+		high_score = max(high_score, score)
+		update_high_score_label()
+		$Point.play()
+
 	if bird.get("fitness") != null:
 		bird.fitness += 100
-	update_high_score_label()
-	$Point.play()
 
 func stop_game():
 	$Timer.stop()

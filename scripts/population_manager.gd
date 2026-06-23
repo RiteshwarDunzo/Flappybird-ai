@@ -3,7 +3,7 @@ extends Node
 @export var bird_scene : PackedScene
 @export var bird_container_path : NodePath = NodePath("../BirdContainer")
 
-const POPULATION_SIZE := 25
+const POPULATION_SIZE := 100
 const GENOME_SIZE := 30
 const ELITE_COUNT := 10
 const MUTATION_RATE := 0.10
@@ -32,9 +32,13 @@ func setup_population() -> bool:
 	if load_learning_state():
 		return true
 
+	generation = 0
+	best_fitness = 0.0
+	saved_best_fitness = 0.0
+	saved_best_genes.clear()
 	create_population()
 	return false
-		
+
 func start_generation():
 	if population.is_empty():
 		create_population()
@@ -58,15 +62,13 @@ func spawn_generation():
 		bird.died.connect(_on_bird_died)
 		bird_container.add_child(bird)
 
-	print_generation_status()
-		
+
 func _on_bird_died(bird):
 	if alive_birds <= 0:
 		return
 
 	best_fitness = max(best_fitness, bird.fitness)
 	alive_birds -= 1
-	print_generation_status()
 
 	if alive_birds <= 0:
 		complete_generation()
@@ -79,7 +81,6 @@ func complete_generation():
 	call_deferred("_complete_generation_deferred")
 
 func _complete_generation_deferred():
-	print("Generation Complete")
 	var main = get_parent()
 	if main and main.has_method("reset_round"):
 		main.reset_round()
@@ -88,8 +89,7 @@ func _complete_generation_deferred():
 	if main and main.has_method("start_game"):
 		main.start_game()
 
-func print_generation_status():
-	print("Generation:", generation, " Alive birds:", alive_birds)
+
 
 func refresh_best_fitness() -> void:
 	for genome in population:
@@ -111,13 +111,11 @@ func evolve():
 
 	population.sort_custom(func(a: Genome, b: Genome): return a.fitness > b.fitness)
 
-	var ended_generation := generation
 	var ended_best_fitness := population[0].fitness
 	var average_fitness := get_average_fitness()
 	saved_best_fitness = max(saved_best_fitness, ended_best_fitness)
 	saved_best_genes = population[0].genes.duplicate()
 
-	print("Generation:", ended_generation)
 	print("Best fitness:", ended_best_fitness)
 	print("Average fitness:", average_fitness)
 
@@ -203,18 +201,16 @@ func load_learning_state() -> bool:
 	if not parsed is Dictionary:
 		return false
 
+	var loaded_population := deserialize_population(parsed.get("population", []))
+	if loaded_population.size() != POPULATION_SIZE:
+		return false
+
 	save_best_genome = bool(parsed.get("save_best_genome", save_best_genome))
 	generation = int(parsed.get("generation", 0))
 	saved_best_fitness = float(parsed.get("best_fitness", 0.0))
 	best_fitness = saved_best_fitness
 	saved_best_genes = parsed.get("best_genome", [])
-
-	var loaded_population := deserialize_population(parsed.get("population", []))
-	if loaded_population.size() != POPULATION_SIZE:
-		return false
-
 	population = loaded_population
-	print("Loaded learning state. Generation:", generation, " Best fitness:", saved_best_fitness)
 	return true
 
 func serialize_population() -> Array:

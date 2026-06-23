@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cnmunq5mc0qm8"]
 
 [ext_resource type="Script" uid="uid://dnodjqnukripm" path="res://scripts/main.gd" id="1_sugp2"]
-[ext_resource type="Script" path="res://scripts/neural_network_visualizer.gd" id="2_nnvis"]
+[ext_resource type="Script" uid="uid://bukaa145f06u5" path="res://scripts/neural_network_visualizer.gd" id="2_nnvis"]
 [ext_resource type="PackedScene" uid="uid://b07gst3osn40b" path="res://scenes/background.tscn" id="2_sugp2"]
 [ext_resource type="PackedScene" uid="uid://b22me72tcqmdb" path="res://scenes/ground.tscn" id="4_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://bvkfbrpbldajr" path="res://scenes/pipe.tscn" id="5_tbgi4"]
@@ -97,17 +97,17 @@ theme_override_font_sizes/font_size = 20
 text = "BIRDS ALIVE: 0
 "
 
-[node name="SaveBestGenomeRow" type="HBoxContainer" parent="UI/Stats"]
+[node name="SaveBestGenomeRow" type="HBoxContainer" parent="UI/Stats" unique_id=1148410225]
 custom_minimum_size = Vector2(300, 32)
 layout_mode = 2
 
-[node name="SaveBestGenomeToggle" type="CheckButton" parent="UI/Stats/SaveBestGenomeRow"]
+[node name="SaveBestGenomeToggle" type="CheckButton" parent="UI/Stats/SaveBestGenomeRow" unique_id=1727973859]
 layout_mode = 2
 size_flags_horizontal = 3
 button_pressed = true
 text = "SAVE BEST GENOME"
 
-[node name="SaveBestGenomeValue" type="Label" parent="UI/Stats/SaveBestGenomeRow"]
+[node name="SaveBestGenomeValue" type="Label" parent="UI/Stats/SaveBestGenomeRow" unique_id=1088408251]
 custom_minimum_size = Vector2(42, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("6_tefeu")
