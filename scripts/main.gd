@@ -22,19 +22,26 @@ func _ready():
 	new_game()
 
 func new_game():
-	# reset variables
+	reset_round()
+	if $PopulationManager.setup_population():
+		$PopulationManager.spawn_generation()
+	else:
+		$PopulationManager.start_generation()
+
+func reset_round():
+	$Timer.stop()
 	game_running = false
 	game_over = false
 	score = 0
 	scroll = 0
 	update_high_score_label()
 	$GameOver.hide()
+
 	for pipe in pipes:
-		pipe.queue_free()
+		if is_instance_valid(pipe):
+			pipe.queue_free()
 
 	pipes.clear()
-	$PopulationManager.create_population()
-	$PopulationManager.start_generation()
 
 func _input(event):
 	if game_over == false:
@@ -46,6 +53,8 @@ func _input(event):
 func start_game():
 	game_running = true
 	for bird in $BirdContainer.get_children():
+		if bird.get("has_died") == true:
+			continue
 		bird.flying = true
 		bird.get_node("CollisionShape2D").set_deferred("disabled", false)
 		bird.flap()
@@ -63,13 +72,17 @@ func _process(delta: float) -> void:
 		$Ground.position.x = -scroll
 
 		for pipe in pipes:
-			pipe.position.x -= SCROLL_SPEED*delta
+			if is_instance_valid(pipe):
+				pipe.position.x -= SCROLL_SPEED*delta
 			
 func _on_timer_timeout() -> void:
 	generate_pipes()
 
 
 func generate_pipes():
+	if not game_running:
+		return
+
 	var pipe = pipe_scene.instantiate()
 	pipe.position.x = screen_size.x + PIPE_DELAY
 	pipe.position.y = (screen_size.y - ground_height) / 2 + randi_range(-PIPE_RANGE, PIPE_RANGE)
@@ -110,6 +123,11 @@ func update_stats_ui() -> void:
 	$UI/Stats/GenerationLabel.text = "GENERATION: " + str(population_manager.generation)
 	$UI/Stats/BestFitnessLabel.text = "BEST FITNESS: " + str(snappedf(population_manager.best_fitness, 0.01))
 	$UI/Stats/BirdsAliveLabel.text = "BIRDS ALIVE: " + str(population_manager.alive_birds)
+	$UI/Stats/SaveBestGenomeToggle.set_pressed_no_signal(population_manager.save_best_genome)
+	$UI/Stats/SaveBestGenomeToggle.text = "SAVE BEST GENOME: " + ("YES" if population_manager.save_best_genome else "NO")
 
 func update_high_score_label() -> void:
 	$Label.text = "HIGH SCORE: " + str(high_score)
+
+func _on_save_best_genome_toggle_toggled(button_pressed: bool) -> void:
+	$PopulationManager.set_save_best_genome(button_pressed)
