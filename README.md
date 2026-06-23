@@ -4,8 +4,6 @@ A Flappy Bird clone built in **Godot 4.7** where a population of AI-controlled b
 
 This project is built from scratch as a learning experiment. It does not use external machine-learning libraries; the genome, brain, population manager, fitness scoring, and neural-network visualizer are implemented directly in GDScript.
 
-## Demo
-
 
 
 https://github.com/user-attachments/assets/a969a26c-2e6f-4da0-9883-4f6626a63f46
