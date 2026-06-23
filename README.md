@@ -6,9 +6,11 @@ This project is built from scratch as a learning experiment. It does not use ext
 
 ## Demo
 
-[Watch the demo video](demo/ai.mp4)
 
-> If GitHub does not preview the video inline, open or download `demo/ai.mp4` from the repository.
+
+https://github.com/user-attachments/assets/a969a26c-2e6f-4da0-9883-4f6626a63f46
+
+
 
 ## Features
 
