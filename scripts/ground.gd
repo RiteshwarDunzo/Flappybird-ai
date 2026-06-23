@@ -1,8 +1,10 @@
 extends Area2D
 
-signal hit
+signal hit(body)
 
 
 
 func _on_body_entered(body: Node2D) -> void:
-	hit.emit()
+	if body.has_method("die"):
+		body.die("ground")
+	hit.emit(body)

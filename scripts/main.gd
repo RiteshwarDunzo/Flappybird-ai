@@ -2,7 +2,8 @@ extends Node2D
 
 @export var pipe_scene : PackedScene
 var scroll : float = 0.0
-var score
+var score := 0
+var high_score := 0
 var game_running : bool 
 var game_over : bool
 
@@ -26,15 +27,14 @@ func new_game():
 	game_over = false
 	score = 0
 	scroll = 0
-	$Label.text = "SCORE: " + str(score)
+	update_high_score_label()
 	$GameOver.hide()
 	for pipe in pipes:
 		pipe.queue_free()
 
 	pipes.clear()
-
-	
-	$Bird.reset()
+	$PopulationManager.create_population()
+	$PopulationManager.start_generation()
 
 func _input(event):
 	if game_over == false:
@@ -42,19 +42,18 @@ func _input(event):
 			if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 				if game_running == false:
 					start_game()
-				else:
-					if $Bird.flying:
-						$Bird.flap()
-						check_top()
 
 func start_game():
 	game_running = true
-	$Bird.flying = true
-	$Bird.get_node("CollisionShape2D").set_deferred("disabled", false)
-	$Bird.flap()
+	for bird in $BirdContainer.get_children():
+		bird.flying = true
+		bird.get_node("CollisionShape2D").set_deferred("disabled", false)
+		bird.flap()
 	$Timer.start()
 	
 func _process(delta: float) -> void:
+	update_stats_ui()
+
 	if game_running:
 		scroll += SCROLL_SPEED*delta
 
@@ -79,48 +78,38 @@ func generate_pipes():
 	add_child(pipe)
 	pipes.append(pipe)
 
-func bird_hit():
-	print("Fitness:", $Bird.fitness)
+func bird_hit(_bird):
 	$Hit.play()
-	$Bird.falling = true
-	$Bird.get_node("CollisionShape2D").set_deferred("disabled", true)
-	stop_game()
 
-func scored():
+func scored(bird):
 	score += 1
-	$Bird.fitness += 100
-	$Label.text = "SCORE: " + str(score)
+	high_score = max(high_score, score)
+	if bird.get("fitness") != null:
+		bird.fitness += 100
+	update_high_score_label()
 	$Point.play()
-	
-func check_top():
-	if $Bird.position.y < 0:
-		$Die.play()
-		$Bird.falling = true
-		stop_game()
 
 func stop_game():
 	$Timer.stop()
 	$GameOver.show()
-	$Bird.flying = false
+	for bird in $BirdContainer.get_children():
+		bird.flying = false
 	game_running = false
 	game_over = true
 
 
-func _on_ground_hit() -> void:
-	print("Fitness:", $Bird.fitness)
+func _on_ground_hit(_bird) -> void:
 	$Die.play()
-	$Bird.falling = true
-	stop_game()
 
 
 func _on_game_over_restart() -> void:
 	new_game()
 
+func update_stats_ui() -> void:
+	var population_manager = $PopulationManager
+	$UI/Stats/GenerationLabel.text = "GENERATION: " + str(population_manager.generation)
+	$UI/Stats/BestFitnessLabel.text = "BEST FITNESS: " + str(snappedf(population_manager.best_fitness, 0.01))
+	$UI/Stats/BirdsAliveLabel.text = "BIRDS ALIVE: " + str(population_manager.alive_birds)
 
-func _on_bird_hit_top() -> void:
-	print("Fitness:", $Bird.fitness)
-	$Die.play()
-	$Hit.play()
-	$Bird.falling = true
-	stop_game()
-	
+func update_high_score_label() -> void:
+	$Label.text = "HIGH SCORE: " + str(high_score)

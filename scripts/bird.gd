@@ -1,7 +1,11 @@
 extends CharacterBody2D
 
-signal hit_top
+signal died(bird)
 
+var genome : Genome:
+	set(value):
+		genome = value
+		brain = Brain.new(genome) if genome else null
 var fitness := 0.0
 var brain : Brain
 const GRAVITY: int = 1000
@@ -10,27 +14,30 @@ const FLAP_SPEED: int = -580
 
 var flying: bool = false
 var falling: bool = false
+var has_died: bool = false
 
 const START_POS = Vector2(193, 303)
 const PIPE_PASSED_MARGIN := 80.0
 
 func _ready():
 	reset()
-	brain = Brain.new()
 
 func reset():
 	falling = false
 	flying = false
+	has_died = false
 	fitness = 0.0
+	velocity = Vector2.ZERO
 	position = START_POS
 	set_rotation(0)
+	$CollisionShape2D.set_deferred("disabled", false)
 
 func get_inputs():
 	var viewport_size = get_viewport_rect().size
 	var pipe_distance := 1.0
 	var gap_center_diff := 0.0
 
-	var main = get_parent()
+	var main = get_tree().current_scene
 	if main and "pipes" in main and main.pipes.size() > 0:
 		var next_pipe: Node2D = null
 		var closest_dx := INF
@@ -60,15 +67,13 @@ func get_inputs():
 	]
 
 func _physics_process(delta: float) -> void:
-	if flying:
+	if flying and not has_died:
 		fitness += delta
-		var output = brain.predict(get_inputs())
-		print(output)
-		if output > 0.6:
+		if brain and brain.predict(get_inputs()) > 0.5:
 			flap()
 	if flying or falling:
 		if flying and global_position.y <= 0:
-			hit_top.emit()
+			die("top")
 		velocity.y += GRAVITY * delta
 
 		if velocity.y > MAX_VEL:
@@ -88,5 +93,22 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 
 func flap():
+	if has_died:
+		return
+
 	velocity.y = FLAP_SPEED
-	$"../Flap".play()
+	var flap_sound = get_tree().current_scene.get_node_or_null("Flap")
+	if flap_sound:
+		flap_sound.play()
+
+func die(_reason := ""):
+	if has_died:
+		return
+
+	has_died = true
+	flying = false
+	falling = true
+	if genome:
+		genome.fitness = fitness
+	$CollisionShape2D.set_deferred("disabled", true)
+	died.emit(self)

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cnmunq5mc0qm8"]
 
-[ext_resource type="PackedScene" uid="uid://csle2uod273ml" path="res://scenes/bird.tscn" id="1_0wfyh"]
 [ext_resource type="Script" uid="uid://dnodjqnukripm" path="res://scripts/main.gd" id="1_sugp2"]
+[ext_resource type="Script" path="res://scripts/neural_network_visualizer.gd" id="2_nnvis"]
 [ext_resource type="PackedScene" uid="uid://b07gst3osn40b" path="res://scenes/background.tscn" id="2_sugp2"]
 [ext_resource type="PackedScene" uid="uid://b22me72tcqmdb" path="res://scenes/ground.tscn" id="4_jyhfs"]
 [ext_resource type="PackedScene" uid="uid://bvkfbrpbldajr" path="res://scenes/pipe.tscn" id="5_tbgi4"]
@@ -11,24 +11,24 @@
 [ext_resource type="AudioStream" uid="uid://cs2e2r2unr0kb" path="res://sfx/point.mp3" id="9_eb6dy"]
 [ext_resource type="AudioStream" uid="uid://5w8v1sl63sll" path="res://sfx/flap.mp3" id="10_trceg"]
 [ext_resource type="AudioStream" uid="uid://bi54iw16eelkv" path="res://sfx/die.mp3" id="11_a8y0u"]
+[ext_resource type="PackedScene" uid="uid://cterpwht6wev1" path="res://scenes/bird_container.tscn" id="12_trceg"]
+[ext_resource type="PackedScene" uid="uid://c3c4oph3hs66b" path="res://scenes/population_manager.tscn" id="13_a8y0u"]
 
 [node name="Main" type="Node2D" unique_id=1009420824]
 script = ExtResource("1_sugp2")
 pipe_scene = ExtResource("5_tbgi4")
 
 [node name="Background" parent="." unique_id=1810099768 instance=ExtResource("2_sugp2")]
-position = Vector2(435.006, 387.8612)
+position = Vector2(432, 388)
 scale = Vector2(-1.0005424, 1.0100098)
+
+[node name="NeuralNetworkVisualizer" type="Node2D" parent="." unique_id=1086232671]
+script = ExtResource("2_nnvis")
 
 [node name="Ground" parent="." unique_id=1299636376 instance=ExtResource("4_jyhfs")]
 z_index = 1
 position = Vector2(-11, 272)
 scale = Vector2(1.3339322, 1.0047126)
-
-[node name="Bird" parent="." unique_id=1440448987 instance=ExtResource("1_0wfyh")]
-z_index = 1
-position = Vector2(193, 303)
-scale = Vector2(0.8004017, 0.83031964)
 
 [node name="Pipe" parent="." unique_id=2034993424 instance=ExtResource("5_tbgi4")]
 visible = false
@@ -45,7 +45,7 @@ offset_right = 506.0
 offset_bottom = 60.0
 theme_override_fonts/font = ExtResource("6_tefeu")
 theme_override_font_sizes/font_size = 25
-text = "SCORE: "
+text = "HIGH SCORE: 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -63,8 +63,40 @@ stream = ExtResource("10_trceg")
 [node name="Die" type="AudioStreamPlayer2D" parent="." unique_id=1351591975]
 stream = ExtResource("11_a8y0u")
 
+[node name="BirdContainer" parent="." unique_id=1839024412 instance=ExtResource("12_trceg")]
+
+[node name="PopulationManager" parent="." unique_id=726478460 instance=ExtResource("13_a8y0u")]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=419646375]
+layer = 10
+
+[node name="Stats" type="VBoxContainer" parent="UI" unique_id=1452207002]
+offset_left = 13.0
+offset_top = 63.0
+offset_right = 307.0
+offset_bottom = 206.0
+
+[node name="GenerationLabel" type="Label" parent="UI/Stats" unique_id=419270399]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("6_tefeu")
+theme_override_font_sizes/font_size = 20
+text = "GENERATION: 0
+"
+
+[node name="BestFitnessLabel" type="Label" parent="UI/Stats" unique_id=1385361287]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("6_tefeu")
+theme_override_font_sizes/font_size = 20
+text = "BEST FITNESS: 0
+"
+
+[node name="BirdsAliveLabel" type="Label" parent="UI/Stats" unique_id=1121851005]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("6_tefeu")
+theme_override_font_sizes/font_size = 20
+text = "BIRDS ALIVE: 0
+"
+
 [connection signal="hit" from="Ground" to="." method="_on_ground_hit"]
-[connection signal="hit_top" from="Bird" to="." method="_on_bird_hit_top"]
-[connection signal="hit" from="Pipe" to="." method="_on_pipe_hit"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="restart" from="GameOver" to="." method="_on_game_over_restart"]

@@ -53,5 +53,4 @@ position = Vector2(73, 1.75)
 shape = SubResource("RectangleShape2D_rpl65")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="scored" from="." to="." method="_on_scored"]
 [connection signal="body_entered" from="Score" to="." method="_on_score_body_entered"]

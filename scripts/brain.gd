@@ -2,17 +2,15 @@ extends Node
 
 class_name Brain
 
-var genes = []
+var genome : Genome
 
-func _init():
-	for i in range(30):
-		genes.append(randf_range(-1.0, 1.0))
-
+func _init(g : Genome):
+	genome = g
+	
 func sigmoid(x):
 	return 1.0 / (1.0 + exp(-x))
 
 func predict(inputs):
-	print(inputs)
 	var hidden = []
 
 	var index = 0
@@ -22,7 +20,7 @@ func predict(inputs):
 		var sum = 0.0
 
 		for i in range(4):
-			sum += inputs[i] * genes[index]
+			sum += inputs[i] * genome.genes[index]
 			index += 1
 
 		hidden.append(sigmoid(sum))
@@ -30,7 +28,7 @@ func predict(inputs):
 	var output = 0.0
 
 	for h in range(6):
-		output += hidden[h] * genes[index]
+		output += hidden[h] * genome.genes[index]
 		index += 1
 
 	return sigmoid(output)
