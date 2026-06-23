@@ -14,6 +14,10 @@ const PIPE_RANGE : int = 200
 var screen_size : Vector2i
 var ground_height : int
 var pipes : Array
+var displayed_save_best_genome := false
+
+@onready var save_best_genome_toggle: CheckButton = $UI/Stats/SaveBestGenomeRow/SaveBestGenomeToggle
+@onready var save_best_genome_value: Label = $UI/Stats/SaveBestGenomeRow/SaveBestGenomeValue
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -21,6 +25,7 @@ func _ready():
 	screen_size = get_window().size
 	ground_height = $Ground.get_node("Sprite2D").texture.get_height()
 	new_game()
+	sync_save_best_genome_ui(true)
 
 func new_game():
 	reset_round()
@@ -126,11 +131,20 @@ func update_stats_ui() -> void:
 	$UI/Stats/GenerationLabel.text = "GENERATION: " + str(population_manager.generation)
 	$UI/Stats/BestFitnessLabel.text = "BEST FITNESS: " + str(snappedf(population_manager.best_fitness, 0.01))
 	$UI/Stats/BirdsAliveLabel.text = "BIRDS ALIVE: " + str(population_manager.alive_birds)
-	$UI/Stats/SaveBestGenomeRow/SaveBestGenomeToggle.set_pressed_no_signal(population_manager.save_best_genome)
-	$UI/Stats/SaveBestGenomeRow/SaveBestGenomeValue.text = "YES" if population_manager.save_best_genome else "NO"
+	sync_save_best_genome_ui()
+
+func sync_save_best_genome_ui(force := false) -> void:
+	var current_value: bool = $PopulationManager.save_best_genome
+	if not force and current_value == displayed_save_best_genome:
+		return
+
+	displayed_save_best_genome = current_value
+	save_best_genome_toggle.set_pressed_no_signal(current_value)
+	save_best_genome_value.text = "YES" if current_value else "NO"
 
 func update_high_score_label() -> void:
 	$Label.text = "HIGH SCORE: " + str(high_score)
 
 func _on_save_best_genome_toggle_toggled(button_pressed: bool) -> void:
 	$PopulationManager.set_save_best_genome(button_pressed)
+	sync_save_best_genome_ui(true)
